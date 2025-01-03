@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %} Lista de Tarefas {% endblock %}
+
+{% block content %}
+
+<div class="offset-1 col-10 list-div">
+    <h1>Lista Tarefas</h1>
+
+    <div class="dashboard">
+        <div class="col-4 dashboard-box" id="dashboard-lastdays">
+            <h4>Finalizadas nos últimos 30 dias</h4>
+            <span>{{ tasksrecently }}</span>
+        </div>
+        <div class="col-4 dashboard-box" id="dashboard-done">
+            <h4>Tarefas finalizadas</h4>
+            <span>{{ tasksdone }}</span>
+        </div>
+        <div class="col-4 dashboard-box" id="dashboard-doing">
+            <h4>Tarefas para fazer</h4>
+            <span>{{ tasksdoing }}</span>
+        </div>
+    </div>
+
+
+        <div class="col-2 p-2 me-2 d-inline-block add-div w-auto">
+            <a href="newtask/" class="text-white" style="text-decoration: none;">
+                <i class="fa-solid fa-plus"></i> Adinionar tarefa
+            </a>    
+        </div>
+        
+    
+        <div class="col-6 py-2 d-inline-block ">
+            <form method="GET" id="search-form" class="d-flex align-items-center">
+                <input type="text" class="form-control" id="search" name="search" placeholder="Digite o nome da tarefa para buscar" value="{{ request.GET.search }}">
+                <i class="fa-solid fa-search" id="search-btn"></i>
+            </form>
+        </div>
+    
+    
+    
+    <div class="col-12 filter-div my-3 p-0 d-inline-flex align-items-center">
+        <span class="pe-1">Filtrar por: </span>
+        <select name="filter" id="filter" class="form-control">
+            <option value="">Escolha uma opção</option>
+            <option value="done">Tarefas concluídas</option>
+            <option value="doing">Tarefas à fazer</option>
+        </select>
+    </div>
+    
+    {% if messages %}
+    <ul class="messages pt-3">
+        {% for message in messages %}
+            <li {% if message.tags %} class="alert alert-info alert-{{messages.tags}}" {% endif %}> {{message}} </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <ul class="task-list">
+        {% for task in tasks %}
+        {% if task.done == 'doing' %}
+            <li class="task-item px-3">
+        {% else %}
+            <li class="task-item done px-3">
+        {% endif %}
+            <span><a href="/task/{{task.id}}">{{task.title}}</a></span>
+            <a href="delete/{{task.id}}" class="delete-btn"><span><i class="fa-solid fa-trash"></i></span></a>
+            <a href="edit/{{task.id}}"><span><i class="fa-solid fa-edit"></i></span></a>
+            <a href="changestatus/{{task.id}}"><span><i class="fa-solid fa-check"></i></span></a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if tasks.has_previous %}
+            <a href="?page={{tasks.previous_page_number}}"><i class="fa-solid fa-arrow-left"></i></a>
+            {% endif %}
+            
+            {% if tasks.paginator.num_pages %}
+            <span class="current">
+                {{ tasks.number }} de {{ tasks.paginator.num_pages}}
+            </span>
+            {% endif %}
+
+            {% if tasks.has_next %}
+            <a href="?page={{tasks.next_page_number}}"><i class="fa-solid fa-arrow-right"></i></a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+{% endblock %}
