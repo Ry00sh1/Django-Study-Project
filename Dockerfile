@@ -1,5 +1,5 @@
-FROM python:3.6.8-alpine
-LABEL mantainer="luizomf@gmail.com"
+FROM python:3.11.3-alpine3.18
+LABEL mantainer="phasena@gmail.com"
 
 # Essa variável de ambiente é usada para controlar se o Python deve 
 # gravar arquivos de bytecode (.pyc) no disco. 1 = Não, 0 = Sim
@@ -26,6 +26,7 @@ EXPOSE 8000
 # imagem como uma nova camada.
 # Agrupar os comandos em um único RUN pode reduzir a quantidade de camadas da 
 # imagem e torná-la mais eficiente.
+RUN python --version && pip --version
 RUN python -m venv /venv && \
   /venv/bin/pip install --upgrade pip && \
   /venv/bin/pip install -r /djangoapp/requirements.txt && \
